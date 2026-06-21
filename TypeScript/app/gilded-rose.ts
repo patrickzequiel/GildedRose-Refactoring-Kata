@@ -17,21 +17,28 @@ export class GildedRose {
     this.items = items;
   }
 
+  decreaseQuality(quality: number, isConjured: boolean) {
+      const amount = isConjured ? 2 : 1
+      return Math.max(0, quality - amount)
+  }
+
+  updateSellIn(item: Item, isSulfuras: boolean) {
+    if (!isSulfuras) {
+      item.sellIn = item.sellIn - 1;
+    }
+  }
+
   updateQuality() {
     this.items.forEach((item) => {
       const isSulfuras = item.name === 'Sulfuras, Hand of Ragnaros'
       const isAgedBrie = item.name === 'Aged Brie';
       const isBackstage = item.name === 'Backstage passes to a TAFKAL80ETC concert'
       const isConjured = item.name === 'Conjured Mana Cake';
+
         if (!isAgedBrie && !isBackstage) {
           if (item.quality > 0) {
             if (!isSulfuras) {
-              if (isConjured) {
-                item.quality = Math.max(0, item.quality - 2);
-              } else {
-                item.quality = item.quality - 1
-
-              }
+              item.quality = this.decreaseQuality(item.quality, isConjured);
             }
           }
         } else {
@@ -51,29 +58,20 @@ export class GildedRose {
             }
           }
         }
-        if (!isSulfuras) {
-          item.sellIn = item.sellIn - 1;
-        }
-        if (item.sellIn < 0) {
-          if (!isAgedBrie) {
-            if (!isBackstage) {
-              if (item.quality > 0) {
-                if (!isSulfuras) {
-                  if (isConjured) {
-                    item.quality = Math.max(0, item.quality - 2);
-                  } else {
-                    item.quality = item.quality - 1
 
-                  }
-                }
-              }
-            } else {
-              item.quality = item.quality - item.quality
-            }
-          } else {
-            if (item.quality < 50) {
-              item.quality = item.quality + 1
-            }
+        this.updateSellIn(item, isSulfuras);
+
+        if (item.sellIn < 0) {
+
+          if (isBackstage) {
+            item.quality = 0
+          }
+          if (isAgedBrie && item.quality < 50) {
+            item.quality += 1;
+          }
+
+          if (!isAgedBrie && !isBackstage && !isSulfuras) {
+            item.quality = this.decreaseQuality(item.quality, isConjured);
           }
         }
 
