@@ -5,12 +5,15 @@ const ITEM = {
   CONJURED: "Conjured Mana Cake",
 } as const;
 
+const MIN_QUALITY = 0;
+const MAX_QUALITY = 50;
+
 export class Item {
   name: string;
   sellIn: number;
   quality: number;
 
-  constructor(name, sellIn, quality) {
+  constructor(name: string, sellIn: number, quality: number) {
     this.name = name;
     this.sellIn = sellIn;
     this.quality = quality;
@@ -24,14 +27,12 @@ export class GildedRose {
     this.items = items;
   }
 
-  decreaseQuality(item: Item) {
-    const amount = item.name === ITEM.CONJURED ? 2 : 1;
-
-    item.quality = Math.max(0, item.quality - amount);
+  decreaseQuality(item: Item, amount: number) {
+    item.quality = Math.max(MIN_QUALITY, item.quality - amount);
   }
 
   increaseQuality(item: Item) {
-    item.quality = Math.min(50, item.quality + 1);
+    item.quality = Math.min(MAX_QUALITY, item.quality + 1);
   }
 
   decreaseSellIn(item: Item) {
@@ -64,10 +65,12 @@ export class GildedRose {
   }
 
   updateNormal(item: Item) {
-    this.decreaseQuality(item);
+    const amount = item.name === ITEM.CONJURED ? 2 : 1;
+
+    this.decreaseQuality(item, amount);
     this.decreaseSellIn(item);
     if (item.sellIn < 0) {
-      this.decreaseQuality(item);
+      this.decreaseQuality(item, amount);
     }
   }
 
