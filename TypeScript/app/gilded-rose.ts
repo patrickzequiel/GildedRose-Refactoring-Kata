@@ -55,7 +55,9 @@ export class GildedRose {
     }
   }
 
-  updateNormal(item: Item, isConjured: boolean) {
+  updateNormal(item: Item) {
+    const isConjured = item.name === "Conjured Mana Cake";
+
     item.quality = this.decreaseQuality(item.quality, isConjured);
 
     this.decreaseSellIn(item);
@@ -70,7 +72,6 @@ export class GildedRose {
     const isAgedBrie = item.name === "Aged Brie";
     const isBackstage =
       item.name === "Backstage passes to a TAFKAL80ETC concert";
-    const isConjured = item.name === "Conjured Mana Cake";
 
     if (isSulfuras) return;
 
@@ -78,7 +79,7 @@ export class GildedRose {
 
     if (isBackstage) return this.updateBackstage(item);
 
-    return this.updateNormal(item, isConjured);
+    return this.updateNormal(item);
   }
 
   updateQuality() {
