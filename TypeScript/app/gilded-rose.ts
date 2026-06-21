@@ -42,26 +42,19 @@ export class GildedRose {
   updateBrie(item: Item) {
     this.increaseQuality(item);
     this.decreaseSellIn(item);
-    if (item.sellIn < 0) {
-      this.increaseQuality(item);
-    }
+    if (item.sellIn < 0)this.increaseQuality(item);
+    
   }
 
   updateBackstage(item: Item) {
     this.increaseQuality(item);
 
-    if (item.sellIn <= 10) {
-      this.increaseQuality(item);
-    }
-    if (item.sellIn <= 5) {
-      this.increaseQuality(item);
-    }
+    if (item.sellIn <= 10) this.increaseQuality(item);
+    if (item.sellIn <= 5) this.increaseQuality(item);
 
     this.decreaseSellIn(item);
 
-    if (item.sellIn < 0) {
-      item.quality = 0;
-    }
+    if (item.sellIn < 0) item.quality = 0;
   }
 
   updateNormal(item: Item) {
@@ -69,9 +62,7 @@ export class GildedRose {
 
     this.decreaseQuality(item, amount);
     this.decreaseSellIn(item);
-    if (item.sellIn < 0) {
-      this.decreaseQuality(item, amount);
-    }
+    if (item.sellIn < 0) this.decreaseQuality(item, amount);
   }
 
   updateQualityItem(item: Item) {
@@ -89,9 +80,7 @@ export class GildedRose {
   }
 
   updateQuality() {
-    this.items.forEach((item) => {
-      this.updateQualityItem(item);
-    });
+    this.items.forEach((item) => this.updateQualityItem(item));
 
     return this.items;
   }
