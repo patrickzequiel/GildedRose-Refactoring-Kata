@@ -42,8 +42,7 @@ export class GildedRose {
   updateBrie(item: Item) {
     this.increaseQuality(item);
     this.decreaseSellIn(item);
-    if (item.sellIn < 0)this.increaseQuality(item);
-    
+    if (item.sellIn < 0) this.increaseQuality(item);
   }
 
   updateBackstage(item: Item) {
