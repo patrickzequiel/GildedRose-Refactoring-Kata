@@ -22,57 +22,59 @@ export class GildedRose {
     return Math.max(0, quality - amount);
   }
 
-  updateSellIn(item: Item, isSulfuras: boolean) {
-    if (!isSulfuras) {
-      item.sellIn = item.sellIn - 1;
-    }
+  increaseQuality(quality: number) {
+    return Math.min(50, quality + 1);
   }
 
-  updateQuality() {
-    this.items.forEach((item) => {
-      const isSulfuras = item.name === "Sulfuras, Hand of Ragnaros";
+  updateSellIn(item: Item) {
+    item.sellIn -= 1;
+  }
+
+  updateQualityItem(item: Item) {
+     const isSulfuras = item.name === "Sulfuras, Hand of Ragnaros";
       const isAgedBrie = item.name === "Aged Brie";
       const isBackstage =
         item.name === "Backstage passes to a TAFKAL80ETC concert";
       const isConjured = item.name === "Conjured Mana Cake";
 
-      if (isSulfuras) {
+      if (isSulfuras) return;
+      if (isAgedBrie) {
+        item.quality = this.increaseQuality(item.quality);
       }
-      if (isAgedBrie && item.quality < 50) {
-        item.quality += 1;
-      }
-      if (isBackstage && item.quality < 50) {
-        item.quality = item.quality + 1;
-
-        if (item.sellIn < 11 && item.quality < 50) {
-          if (item.quality < 50) {
-            item.quality = item.quality + 1;
-          }
+      if (isBackstage) {
+        item.quality = this.increaseQuality(item.quality);
+        if (item.sellIn < 11) {
+            item.quality = this.increaseQuality(item.quality);
+          
         }
         if (item.sellIn < 6) {
-          if (item.quality < 50 && item.quality < 50) {
-            item.quality = item.quality + 1;
-          }
+          item.quality = this.increaseQuality(item.quality);
         }
       }
-      if (!isAgedBrie && !isBackstage && !isSulfuras) {
+      if (!isAgedBrie && !isBackstage) {
         item.quality = this.decreaseQuality(item.quality, isConjured);
       }
 
-      this.updateSellIn(item, isSulfuras);
+      this.updateSellIn(item);
 
       if (item.sellIn < 0) {
         if (isBackstage) {
           item.quality = 0;
         }
-        if (isAgedBrie && item.quality < 50) {
-          item.quality += 1;
+        if (isAgedBrie) {
+          item.quality = this.increaseQuality(item.quality);
         }
 
-        if (!isAgedBrie && !isBackstage && !isSulfuras) {
+        if (!isAgedBrie && !isBackstage) {
           item.quality = this.decreaseQuality(item.quality, isConjured);
         }
       }
+  }
+
+
+  updateQuality() {
+    this.items.forEach((item) => {
+     this.updateQualityItem(item);
     });
 
     return this.items;
