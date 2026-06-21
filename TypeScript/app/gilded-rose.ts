@@ -18,8 +18,8 @@ export class GildedRose {
   }
 
   decreaseQuality(quality: number, isConjured: boolean) {
-      const amount = isConjured ? 2 : 1
-      return Math.max(0, quality - amount)
+    const amount = isConjured ? 2 : 1;
+    return Math.max(0, quality - amount);
   }
 
   updateSellIn(item: Item, isSulfuras: boolean) {
@@ -30,52 +30,50 @@ export class GildedRose {
 
   updateQuality() {
     this.items.forEach((item) => {
-      const isSulfuras = item.name === 'Sulfuras, Hand of Ragnaros'
-      const isAgedBrie = item.name === 'Aged Brie';
-      const isBackstage = item.name === 'Backstage passes to a TAFKAL80ETC concert'
-      const isConjured = item.name === 'Conjured Mana Cake';
+      const isSulfuras = item.name === "Sulfuras, Hand of Ragnaros";
+      const isAgedBrie = item.name === "Aged Brie";
+      const isBackstage =
+        item.name === "Backstage passes to a TAFKAL80ETC concert";
+      const isConjured = item.name === "Conjured Mana Cake";
 
-        if (!isAgedBrie && !isBackstage) {
-          if (item.quality > 0) {
-            if (!isSulfuras) {
-              item.quality = this.decreaseQuality(item.quality, isConjured);
-            }
-          }
-        } else {
+      if (isSulfuras) {
+      }
+      if (isAgedBrie && item.quality < 50) {
+        item.quality += 1;
+      }
+      if (isBackstage && item.quality < 50) {
+        item.quality = item.quality + 1;
+
+        if (item.sellIn < 11 && item.quality < 50) {
           if (item.quality < 50) {
-            item.quality = item.quality + 1
-            if (isBackstage) {
-              if (item.sellIn < 11) {
-                if (item.quality < 50) {
-                  item.quality = item.quality + 1
-                }
-              }
-              if (item.sellIn < 6) {
-                if (item.quality < 50) {
-                  item.quality = item.quality + 1
-                }
-              }
-            }
+            item.quality = item.quality + 1;
           }
         }
-
-        this.updateSellIn(item, isSulfuras);
-
-        if (item.sellIn < 0) {
-
-          if (isBackstage) {
-            item.quality = 0
-          }
-          if (isAgedBrie && item.quality < 50) {
-            item.quality += 1;
-          }
-
-          if (!isAgedBrie && !isBackstage && !isSulfuras) {
-            item.quality = this.decreaseQuality(item.quality, isConjured);
+        if (item.sellIn < 6) {
+          if (item.quality < 50 && item.quality < 50) {
+            item.quality = item.quality + 1;
           }
         }
+      }
+      if (!isAgedBrie && !isBackstage && !isSulfuras) {
+        item.quality = this.decreaseQuality(item.quality, isConjured);
+      }
 
-    })
+      this.updateSellIn(item, isSulfuras);
+
+      if (item.sellIn < 0) {
+        if (isBackstage) {
+          item.quality = 0;
+        }
+        if (isAgedBrie && item.quality < 50) {
+          item.quality += 1;
+        }
+
+        if (!isAgedBrie && !isBackstage && !isSulfuras) {
+          item.quality = this.decreaseQuality(item.quality, isConjured);
+        }
+      }
+    });
 
     return this.items;
   }
