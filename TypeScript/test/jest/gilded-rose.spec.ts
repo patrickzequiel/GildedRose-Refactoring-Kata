@@ -10,6 +10,14 @@ const afterOneDay = (name: string, sellIn: number, quality: number): Item => {
 };
 
 describe('Gilded Rose', () => {
+  describe('Empty inventory', () => {
+    it('GIVEN no items WHEN a day passes THEN it returns an empty list', () => {
+      const items = new GildedRose().updateQuality();
+
+      expect(items).toEqual([]);
+    });
+  });
+
   describe('Normal item', () => {
     it('GIVEN a normal item WHEN a day passes THEN sellIn and quality each drop by 1', () => {
       const item = afterOneDay('Elixir of the Mongoose', 10, 20);

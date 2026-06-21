@@ -1,3 +1,10 @@
+const ITEM = {
+  SULFURAS: "Sulfuras, Hand of Ragnaros",
+  AGED_BRIE: "Aged Brie",
+  BACKSTAGE: "Backstage passes to a TAFKAL80ETC concert",
+  CONJURED: "Conjured Mana Cake",
+} as const;
+
 export class Item {
   name: string;
   sellIn: number;
@@ -17,13 +24,14 @@ export class GildedRose {
     this.items = items;
   }
 
-  decreaseQuality(quality: number, isConjured: boolean) {
-    const amount = isConjured ? 2 : 1;
-    return Math.max(0, quality - amount);
+  decreaseQuality(item: Item) {
+    const amount = item.name === ITEM.CONJURED ? 2 : 1;
+
+    item.quality = Math.max(0, item.quality - amount);
   }
 
-  increaseQuality(quality: number) {
-    return Math.min(50, quality + 1);
+  increaseQuality(item: Item) {
+    item.quality = Math.min(50, item.quality + 1);
   }
 
   decreaseSellIn(item: Item) {
@@ -31,21 +39,21 @@ export class GildedRose {
   }
 
   updateBrie(item: Item) {
-    item.quality = this.increaseQuality(item.quality);
+    this.increaseQuality(item);
     this.decreaseSellIn(item);
     if (item.sellIn < 0) {
-      item.quality = this.increaseQuality(item.quality);
+      this.increaseQuality(item);
     }
   }
 
   updateBackstage(item: Item) {
-    item.quality = this.increaseQuality(item.quality);
+    this.increaseQuality(item);
 
-    if (item.sellIn < 11) {
-      item.quality = this.increaseQuality(item.quality);
+    if (item.sellIn <= 10) {
+      this.increaseQuality(item);
     }
-    if (item.sellIn < 6) {
-      item.quality = this.increaseQuality(item.quality);
+    if (item.sellIn <= 5) {
+      this.increaseQuality(item);
     }
 
     this.decreaseSellIn(item);
@@ -56,22 +64,17 @@ export class GildedRose {
   }
 
   updateNormal(item: Item) {
-    const isConjured = item.name === "Conjured Mana Cake";
-
-    item.quality = this.decreaseQuality(item.quality, isConjured);
-
+    this.decreaseQuality(item);
     this.decreaseSellIn(item);
-
     if (item.sellIn < 0) {
-      item.quality = this.decreaseQuality(item.quality, isConjured);
+      this.decreaseQuality(item);
     }
   }
 
   updateQualityItem(item: Item) {
-    const isSulfuras = item.name === "Sulfuras, Hand of Ragnaros";
-    const isAgedBrie = item.name === "Aged Brie";
-    const isBackstage =
-      item.name === "Backstage passes to a TAFKAL80ETC concert";
+    const isSulfuras = item.name === ITEM.SULFURAS;
+    const isAgedBrie = item.name === ITEM.AGED_BRIE;
+    const isBackstage = item.name === ITEM.BACKSTAGE;
 
     if (isSulfuras) return;
 
